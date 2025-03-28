@@ -113,3 +113,15 @@ Similarly, you can use other modules and methods as needed.
 - **Timeouts:** All API requests include a timeout to prevent indefinite waiting.
 
 This toolkit is designed to be robust and easy to integrate with applications that need to interact with Habitica's API.
+
+## Contributing
+
+Contributions are welcome! Please fork the repository and submit a pull request with your changes. Ensure your code follows the existing style and includes appropriate tests and documentation.
+
+## License
+
+This project is licensed under the MIT License.
+
+## Contact
+
+For questions or support, please contact **Alex** at [a@alexbishop.me].

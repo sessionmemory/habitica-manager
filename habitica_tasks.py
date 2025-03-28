@@ -27,17 +27,21 @@ class Tools:
     def create_task(self, task_data: dict) -> dict:
         """
         Create a new task in Habitica.
-        
+
         valid_types = ["habit", "daily", "todo", "reward"]
 
         :param task_data: Dictionary containing task details.
-            Required fields: "text", "type".
-            Example:
-            {
-                "text": "Read a book",
-                "type": "todo",
-                "priority": 1.5
-            }
+            Required fields:
+            - "text" (str): The title or description of the task.
+            - "type" (str): The type of task. Must be one of the following:
+                - "habit": Actions to encourage or discourage without a fixed schedule.
+                Example: "Take a stretching break" (positive) or "Chew nails" (negative).
+                - "daily": Tasks to be completed on a regular schedule (e.g., daily, weekly).
+                Example: "Go to bed on time" or "Do laundry every Saturday".
+                - "todo": One-time or infrequent tasks.
+                Example: "Send dad a birthday card" or "Pick up package at post office".
+                - "reward": Treats or indulgences purchasable with in-game gold.
+                Example: "Buy a new book" or "Enjoy a special treat".
 
         :return: Dictionary with success status and task details or error message.
             Example success response:
