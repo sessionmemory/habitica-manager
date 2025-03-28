@@ -28,6 +28,7 @@ class Tools:
         Create a new task in Habitica.
 
         :param task_data: Dictionary containing task details.
+            Required fields: "text", "type".
             Example:
             {
                 "text": "Read a book",
@@ -75,61 +76,127 @@ class Tools:
     def get_task(self, task_id: str) -> dict:
         """
         Retrieve details of a specific task.
+
         :param task_id: The ID of the task to retrieve.
-        :return: The task data as a dictionary.
+            Example: "task-id-123"
+
+        :return: Dictionary with success status and data or error message.
+            Example success response:
+            {
+                "success": true,
+                "data": {
+                    "_id": "task-id",
+                    "text": "Read a book",
+                    "type": "todo",
+                    ...
+                }
+            }
+
+            Example error response:
+            {
+                "success": false,
+                "error": "Request failed: <error details>"
+            }
         """
-        # Habitica API endpoint for getting a task
+        if not isinstance(task_id, str) or not task_id:
+            return {"success": False, "error": "task_id must be a non-empty string."}
+
         url = f"{self.base_url}/tasks/{task_id}"
         try:
-            # Make the GET request to the Habitica API
             response = requests.get(url, headers=self.headers, timeout=10)
             response.raise_for_status()
-            return response.json()
-
+            return {"success": True, "data": response.json()}
         except requests.exceptions.RequestException as e:
-            # Handle potential errors (e.g., network issues, invalid task ID)
             logging.error(f"Get task failed: {e}")
             return {"success": False, "error": f"Request failed: {e}"}
 
-    def list_tasks(self, task_type: str = None) -> Union[dict, list]:
+    def list_tasks(self, task_type: str = None) -> dict:
         """
         List all tasks for the authenticated user.
+
         :param task_type: Optional task type to filter by (e.g., "habits", "dailys", "todos", "rewards", "completedTodos").
-        :return: A list of tasks.
+            Example: "todos"
+
+        :return: Dictionary with success status and data or error message.
+            Example success response:
+            {
+                "success": true,
+                "data": [
+                    {
+                        "_id": "task-id",
+                        "text": "Read a book",
+                        "type": "todo",
+                        ...
+                    },
+                    ...
+                ]
+            }
+
+            Example error response:
+            {
+                "success": false,
+                "error": "Request failed: <error details>"
+            }
         """
-        # Habitica API endpoint for listing tasks
+        if task_type and not isinstance(task_type, str):
+            return {"success": False, "error": "task_type must be a string."}
+
         url = f"{self.base_url}/tasks/user"
-        # Add optional query parameter for task type
         params = {"type": task_type} if task_type else {}
-        # Add your authentication headers here
         try:
-            # Make the GET request to the Habitica API
             response = requests.get(url, headers=self.headers, params=params, timeout=10)
             response.raise_for_status()
-            return response.json()
+            return {"success": True, "data": response.json()}
         except requests.exceptions.RequestException as e:
-            # Handle potential errors (e.g., network issues, invalid task ID)
             logging.error(f"List tasks failed: {e}")
             return {"success": False, "error": f"Request failed: {e}"}
 
-    def add_checklist_item(self, task_id: str, text: str, completed: bool = False) -> dict:
+    def add_checklist_item(self, task_id: str, item_data: dict) -> dict:
         """
-        Adds a checklist item to a task in Habitica.
+        Add a checklist item to an existing task.
+
         :param task_id: The ID of the task to add the checklist item to.
-        :param text: The text of the checklist item.
-        :param completed: Whether the checklist item is checked off. Defaults to False.
-        :return: The updated task data as a dictionary.
+            Example: "task-id-123"
+
+        :param item_data: A dictionary containing the checklist item details.
+            Example:
+            {
+                "text": "Buy groceries",
+                "completed": false
+            }
+
+        :return: Dictionary with success status and data or error message.
+            Example success response:
+            {
+                "success": true,
+                "data": {
+                    "checklist": [
+                        {
+                            "id": "checklist-item-id",
+                            "text": "Buy groceries",
+                            "completed": false
+                        },
+                        ...
+                    ]
+                }
+            }
+
+            Example error response:
+            {
+                "success": false,
+                "error": "Request failed: <error details>"
+            }
         """
-        # Habitica API endpoint for adding a checklist item
+        if not isinstance(task_id, str) or not task_id:
+            return {"success": False, "error": "task_id must be a non-empty string."}
+        if not isinstance(item_data, dict) or not item_data:
+            return {"success": False, "error": "item_data must be a non-empty dictionary."}
+
         url = f"{self.base_url}/tasks/{task_id}/checklist"
-        # Construct the payload with the checklist item data
-        payload = {"text": text, "completed": completed}
         try:
-            # Make the POST request to the Habitica API
-            response = requests.post(url, headers=self.headers, json=payload, timeout=10)
+            response = requests.post(url, headers=self.headers, json=item_data, timeout=10)
             response.raise_for_status()
-            return response.json()
+            return {"success": True, "data": response.json()}
         except requests.exceptions.RequestException as e:
-            # Handle potential errors (e.g., network issues, invalid task ID)
             logging.error(f"Add checklist item failed: {e}")
             return {"success": False, "error": f"Request failed: {e}"}

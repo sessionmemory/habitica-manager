@@ -26,10 +26,35 @@ class Tools:
     def user_login(self, username: str, password: str) -> dict:
         """
         Authenticate a user with Habitica using username/email and password.
+
         :param username: Username or email of the user.
+            Example: "user@example.com" or "username123"
+
         :param password: The user's password.
-        :return: Authentication details including user ID and API token.
+            Example: "securePassword123"
+
+        :return: Dictionary with success status and data or error message.
+            Example success response:
+            {
+                "success": true,
+                "data": {
+                    "_id": "user-id",
+                    "apiToken": "user-api-token",
+                    "newUser": false
+                }
+            }
+
+            Example error response:
+            {
+                "success": false,
+                "error": "Request failed: <error details>"
+            }
         """
+        if not isinstance(username, str) or not username:
+            return {"success": False, "error": "username must be a non-empty string."}
+        if not isinstance(password, str) or not password:
+            return {"success": False, "error": "password must be a non-empty string."}
+
         url = f"{self.base_url}/user/auth/local/login"
         payload = {
             "username": username,
@@ -38,7 +63,7 @@ class Tools:
         try:
             response = requests.post(url, headers=self.headers, json=payload, timeout=10)
             response.raise_for_status()
-            return response.json()
+            return {"success": True, "data": response.json()}
         except requests.exceptions.RequestException as e:
             logging.error(f"User login failed: {e}")
             return {"success": False, "error": f"Request failed: {e}"}
@@ -46,15 +71,39 @@ class Tools:
     def get_user_profile(self, user_fields: str = None) -> dict:
         """
         Retrieve the authenticated user's profile information.
+
         :param user_fields: Optional comma-separated list of user fields to return.
-        :return: The user's profile data as a dictionary.
+            Example: "achievements,items.mounts"
+
+        :return: Dictionary with success status and data or error message.
+            Example success response:
+            {
+                "success": true,
+                "data": {
+                    "profile": {
+                        "name": "User Name",
+                        "photo": "url-to-photo",
+                        ...
+                    },
+                    ...
+                }
+            }
+
+            Example error response:
+            {
+                "success": false,
+                "error": "Request failed: <error details>"
+            }
         """
+        if user_fields and not isinstance(user_fields, str):
+            return {"success": False, "error": "user_fields must be a string."}
+
         url = f"{self.base_url}/user"
         params = {"userFields": user_fields} if user_fields else {}
         try:
             response = requests.get(url, headers=self.headers, params=params, timeout=10)
             response.raise_for_status()
-            return response.json()
+            return {"success": True, "data": response.json()}
         except requests.exceptions.RequestException as e:
             logging.error(f"Get user profile failed: {e}")
             return {"success": False, "error": f"Request failed: {e}"}
@@ -72,6 +121,7 @@ def export_user_data_json(self) -> dict:
 
         Example error response:
         {
+            "success": false,
             "error": "Request failed: <error details>"
         }
     """
