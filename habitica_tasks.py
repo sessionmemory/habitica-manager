@@ -11,6 +11,7 @@ logging.basicConfig(level=logging.INFO)
 
 HABITICA_USER_ID = os.environ.get("HABITICA_USER_ID")
 HABITICA_API_KEY = os.environ.get("HABITICA_API_KEY")
+HABITICA_GPT_TAG_ID = "30cfedfe-4510-43a2-a8db-d87042c0c33a"
 
 class Tools:
     def __init__(self):
@@ -70,6 +71,13 @@ class Tools:
         valid_types = ["habit", "daily", "todo", "reward"]
         if task_data["type"] not in valid_types:
             return {"success": False, "error": f"Invalid task type. Must be one of {valid_types}."}
+
+        # Ensure the task is tagged with the specified tag ID
+        if "tags" in task_data:
+            if HABITICA_GPT_TAG_ID not in task_data["tags"]:
+                task_data["tags"].append(HABITICA_GPT_TAG_ID)
+        else:
+            task_data["tags"] = [HABITICA_GPT_TAG_ID]
 
         url = f"{self.base_url}/tasks/user"
         try:
