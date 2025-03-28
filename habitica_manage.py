@@ -20,6 +20,7 @@ class Tools:
             "x-api-user": HABITICA_USER_ID,
             "x-api-key": HABITICA_API_KEY,
             "Content-Type": "application/json",
+            "x-client": f"{HABITICA_USER_ID}-SessionMemory"
         }
         self.base_url = "https://habitica.com/api/v3"
 
@@ -108,28 +109,28 @@ class Tools:
             logging.error(f"Get user profile failed: {e}")
             return {"success": False, "error": f"Request failed: {e}"}
 
-def export_user_data_json(self) -> dict:
-    """
-    Export the authenticated user's data in JSON format.
+    def export_user_data_json(self) -> dict:
+        """
+        Export the authenticated user's data in JSON format.
 
-    :return: Dictionary containing the user's data as a JSON string on success.
-        Example success response:
-        {
-            "success": true,
-            "data": "{...}"  # JSON string
-        }
+        :return: Dictionary containing the user's data as a JSON string on success.
+            Example success response:
+            {
+                "success": true,
+                "data": "{...}"  # JSON string
+            }
 
-        Example error response:
-        {
-            "success": false,
-            "error": "Request failed: <error details>"
-        }
-    """
-    url = "https://habitica.com/export/userdata.json"
-    try:
-        response = requests.get(url, headers=self.headers, timeout=10)
-        response.raise_for_status()
-        return {"success": True, "data": response.text}
-    except requests.exceptions.RequestException as e:
-        logging.error(f"Export user data failed: {e}")
-        return {"error": f"Request failed: {e}"}
+            Example error response:
+            {
+                "success": false,
+                "error": "Request failed: <error details>"
+            }
+        """
+        url = "https://habitica.com/export/userdata.json"
+        try:
+            response = requests.get(url, headers=self.headers, timeout=10)
+            response.raise_for_status()
+            return {"success": True, "data": response.text}
+        except requests.exceptions.RequestException as e:
+            logging.error(f"Export user data failed: {e}")
+            return {"error": f"Request failed: {e}"}

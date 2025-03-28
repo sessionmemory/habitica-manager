@@ -24,6 +24,7 @@ class Tools:
             "x-api-user": HABITICA_USER_ID,
             "x-api-key": HABITICA_API_KEY,
             "Content-Type": "application/json",
+            "x-client": f"{HABITICA_USER_ID}-SessionMemory"
         }
         self.base_url = "https://habitica.com/api/v3"
 
