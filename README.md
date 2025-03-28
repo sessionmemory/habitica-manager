@@ -38,12 +38,28 @@ This module contains methods for managing tasks within Habitica.
     - `task_type`: Optional task type to filter by (e.g., `"habits"`, `"dailys"`, `"todos"`, `"rewards"`, `"completedTodos"`).
   - **Returns:** A dictionary with success status and a list of tasks or an error message.
 
+- **`update_task(task_id: str, task_data: dict) -> dict`**  
+  Updates details of an existing task in Habitica.  
+  - **Parameters:**  
+    - `task_id`: The ID or alias of the task to update.  
+    - `task_data`: Dictionary containing fields to update (e.g., `"text"`, `"notes"`, `"priority"`).  
+  - **Returns:** A dictionary with success status and updated task details or an error message.
+
 - **`add_checklist_item(task_id: str, item_data: dict) -> dict`**  
   Adds a checklist item to an existing task.  
   - **Parameters:**  
     - `task_id`: The ID of the task to add the checklist item to.
     - `item_data`: A dictionary containing the checklist item details.
   - **Returns:** A dictionary with success status and updated task details or an error message.
+
+- **`update_checklist(task_id: str, item_id: str, checklist_data: dict) -> dict`**  
+  Updates a checklist item within a Habitica task.  
+  - **Parameters:**  
+    - `task_id`: The ID or alias of the task containing the checklist.  
+    - `item_id`: The UUID of the checklist item to update.  
+    - `checklist_data`: Dictionary containing `"text"` (required) and `"completed"` (optional).  
+  - **Returns:** A dictionary with success status and updated task/checklist details or an error message.
+
 
 ### 2. `habitica_manage.py`
 
@@ -66,6 +82,14 @@ This module contains methods for managing user-related interactions with Habitic
   Exports the authenticated user's data in JSON format.  
   - **Returns:** A dictionary containing the user's data as a JSON string or an error message.
 
+- **`get_user_groups(group_types: list, paginate: bool = False, page: int = 0) -> dict`**  
+  Retrieves user's groups from Habitica.  
+  - **Parameters:**  
+    - `group_types`: List of group types to retrieve (e.g., `["party", "privateGuilds", "tavern"]`).  
+    - `paginate`: Optional boolean to enable pagination (`True`/`False`), supported only for `"publicGuilds"`.  
+    - `page`: Optional page number for pagination (non-negative integer; default is `0`).  
+  - **Returns:** A dictionary with success status and an array of requested groups or an error message.
+
 ### 3. `habitica_tags_skills.py`
 
 This module contains methods for managing tags and skills within Habitica.
@@ -83,7 +107,7 @@ This module contains methods for managing tags and skills within Habitica.
 - **`cast_skill(spell_id: str, target_id: str = None) -> dict`**  
   Casts a skill in Habitica.  
   - **Parameters:**  
-    - `spell_id`: The skill to cast. Must be one of the allowed skills.
+    - `spell_id`: The skill to cast. Must be one of the allowed skills: "fireball", "mpheal", "earth", "frost", "smash", "defensiveStance", "valorousPresence", "intimidate", "pickPocket", "backStab", "toolsOfTrade", "stealth", "heal", "protectAura", "brightness", "healAll", "snowball", "spookySparkles", "seafoam", "shinySeed"
     - `target_id`: Optional UUID of the target (task or party member).
   - **Returns:** A dictionary containing the result of the skill cast or an error message.
 
