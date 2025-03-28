@@ -27,6 +27,8 @@ class Tools:
     def create_task(self, task_data: dict) -> dict:
         """
         Create a new task in Habitica.
+        
+        valid_types = ["habit", "daily", "todo", "reward"]
 
         :param task_data: Dictionary containing task details.
             Required fields: "text", "type".
